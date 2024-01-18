@@ -1,6 +1,6 @@
 # Ignore node modules and build output
 node_modules/
-dist/
+# dist/ #leave it for GitHub pages hosting
 lib/
 
 # Ignore IDE and editor folders
