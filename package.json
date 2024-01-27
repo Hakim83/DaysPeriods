@@ -23,7 +23,6 @@
     "@thisbeyond/solid-select": "^0.14.0",
     "adhan": "^4.4.3",
     "bootstrap": "^5.3.2",
-    "bootstrap-icons": "^1.11.3",
     "chart.js": "^4.4.1",
     "chartjs-adapter-date-fns": "^3.0.0",
     "date-fns": "^3.2.0",
