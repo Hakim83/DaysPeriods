@@ -4,13 +4,13 @@ import "./services/prayerTimes";
 import { Coordinates } from 'adhan';
 import { getYearData } from './services/prayerTimes';
 import LineChart from './components/lineChart/lineChart';
-import { TimeDataPoint } from './types/TimeDataPoint';
 import { TimesData } from './types/TimesData';
+import { YearData } from './types/YearData';
 
 const [coordinates, setCoordinates] = createSignal<Coordinates>();
 const [timeZone, setTimeZone] = createSignal<number>();
-const [sunriseDate, setSunriseData] = createSignal<TimeDataPoint[]>([]);
-const [sunsetDate, setSunsetData] = createSignal<TimeDataPoint[]>([]);
+const [yearData,setYearData] =createSignal<YearData>();
+
 const [shortestData, setShortestData] = createSignal<TimesData>();
 const [longestData, setLongestData] = createSignal<TimesData>();
 
@@ -41,9 +41,7 @@ const App: Component = () => {
 
   const updateGraph = () => {
     const data = getYearData(coordinates()!, timeZone()!);
-    const year = new Date().getFullYear();
-    setSunriseData(data.timesData.map(d => { return { x: d.date, y: new Date(year, 0, 1, d.sunrise.getHours(), d.sunrise.getMinutes()) } }));
-    setSunsetData(data.timesData.map(d => { return { x: d.date, y: new Date(year, 0, 1, d.sunset.getHours(), d.sunset.getMinutes()) } }));
+    setYearData(data);
     setShortestData(data.minDate);
     setLongestData(data.maxDate);
   }
@@ -70,8 +68,8 @@ const App: Component = () => {
         <label id="result"></label>
       </div>
       <div class="row">
-        <Show when={sunsetDate().length && sunriseDate().length}>
-          <LineChart data={{ sunriseData: sunriseDate(), sunsetData: sunsetDate() }} />
+        <Show when={yearData()}>
+          <LineChart data={yearData()} />
         </Show>
       </div>
       <div class="row">

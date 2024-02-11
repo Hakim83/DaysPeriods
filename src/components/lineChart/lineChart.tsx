@@ -1,12 +1,37 @@
 // LineChart.tsx
 import { onCleanup, createEffect, Component } from 'solid-js';
 import 'chartjs-adapter-date-fns';
-import { CurveData } from '../../types/CurveData';
-import { Chart } from 'chart.js/auto';
-interface LineChartProps{
-  data:CurveData;
+import Chart, { ChartData } from 'chart.js/auto';
+import { YearData } from '../../types/YearData';
+interface LineChartProps {
+  data: YearData | undefined;
 }
-const LineChart:Component<LineChartProps> = (props) => {
+
+const updateFeaturePoints = (chart: Chart<"line", { x: Date, y: Date }[] | undefined, unknown>, maxDate: Date, minDate: Date) => {
+  const maxDayIndex = getDayIndex(maxDate);
+  const minDayIndex = getDayIndex(minDate);
+
+  const data = chart.data;
+  //todo: complete..
+  data.datasets.forEach(dataset => {
+    dataset.pointBorderColor = (ctx) => {
+      return ctx.dataIndex == maxDayIndex || ctx.dataIndex== minDayIndex ? 'red' : 'green';
+    };
+    dataset.pointBorderColor = (ctx) => {
+      return ctx.dataIndex == maxDayIndex || ctx.dataIndex== minDayIndex ? 'red' : 'green';
+    };
+  });
+
+}
+
+const getDayIndex = (date: Date) => {
+  let firstDay = new Date(date.getFullYear(), 0, 1);
+  let diff = +date - +firstDay;
+  let index = Math.floor(diff / (1000 * 60 * 60 * 24));
+  return index;
+}
+
+const LineChart: Component<LineChartProps> = (props) => {
   const canvasRef = (element: HTMLCanvasElement) => {
     createEffect(() => {
       if (element) {
@@ -18,19 +43,19 @@ const LineChart:Component<LineChartProps> = (props) => {
               datasets: [
                 {
                   label: 'Sunrise',
-                  data: props.data.sunriseData,
+                  data: props.data?.timesData.map(t => ({ x: t.date, y: t.sunrise })),
                   borderWidth: 2,
                   fill: true,
-                  borderColor:"blue",
-                  backgroundColor:"white"
+                  borderColor: "blue",
+                  backgroundColor: "white"
                 },
                 {
                   label: 'Sunset',
-                  data: props.data.sunsetData,
+                  data: props.data?.timesData.map(t => ({ x: t.date, y: t.sunset })),
                   borderWidth: 2,
                   fill: true,
-                  borderColor:"red",
-                  backgroundColor:"orange",
+                  borderColor: "red",
+                  backgroundColor: "orange",
                 },
               ],
             },
@@ -57,6 +82,7 @@ const LineChart:Component<LineChartProps> = (props) => {
               },
             }
           });
+          updateFeaturePoints(newChart, props.data?.maxDate.date!, props.data?.minDate.date!);
           // Cleanup when the component unmounts
           onCleanup(() => {
             newChart.destroy();
