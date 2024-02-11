@@ -32,6 +32,7 @@ const getTimeLocal = (date: Date, timeOffset: number) => {
     //local time zone (+ve hourse for east of GMT)
     //note also we are interested in time part only
     const currentTimeZone = - (date.getTimezoneOffset() / 60);
-    return new Date(date.getFullYear(), 0, 1, (date.getHours() + timeOffset - currentTimeZone), date.getMinutes());
+    let newDate = new Date(date.setHours(date.getHours() + timeOffset - currentTimeZone));
+    return new Date(date.getFullYear(), 0, 1, newDate.getHours(), date.getMinutes());
 
 }
