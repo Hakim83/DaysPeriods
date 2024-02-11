@@ -66,7 +66,7 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
     let result: CityInfo[] = [];
 
     if (inputValue.length > 2) {
-      const url = "http://api.geonames.org/searchJSON";
+      const url = "https://secure.geonames.org/searchJSON";
       const params: GeonamesParams = {
         username: "hakim83", // please replace with your own username
         name_startsWith: `${inputValue}`,  //key search
